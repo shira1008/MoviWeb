@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 
 class DataManagerInterface(ABC):
-
+    @abstractmethod
+    def read_file(self):
+        pass 
+    
     @abstractmethod
     def get_all_users(self):
         pass
