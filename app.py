@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for
 from datamanager.json_data_manager import JSONDataManager
+from fetching_from_api import fetch_data
 
 app = Flask(__name__)
 data_manager = JSONDataManager('data.json')
@@ -7,16 +8,59 @@ data_manager = JSONDataManager('data.json')
 
 @app.route('/')
 def home():
-    return "Welcome to MovieWeb App!"
+    return render_template('index.html')
 
 
 @app.route('/users')
 def list_users():
     users = data_manager.get_all_users()
-    return str(users)  # Temporarily returning users as a string
+    return render_template('users.html', users=users)
+
+@app.route('/users/<int:user_id>')
+def favorite_movies(user_id):
+    movies = data_manager.get_user_movies(user_id)
+    return render_template('user_movies.html', movies=movies, user_id=user_id)
+
+@app.route('/add_user', methods=['GET','POST'])
+def add_user():
+    if request.method == "POST":
+        name = request.form.get('name')
+
+        data_manager.add_new_user(name)
+
+        return redirect(url_for('list_users'))
+        
+    return render_template('add_user.html')
 
 
+@app.route('/add_movie/<int:user_id>', methods=['POST'])
+def add_movie(user_id):
+    movie_name = request.form.get('movie_name')
+    #fetching the data
+    movie_data = fetch_data(movie_name)
+    user = data_manager.get_user_by_id(user_id)
+    # Extract relevant information from the API response
+    director = movie_data.get('Director', '')
+    year = movie_data.get('Year', '')
+    rating = movie_data.get('imdbRating', '')
+    if user:
+        user_movies = user['movies']
+        new_movie_id = data_manager.generate_movie_id(user_movies)
+        movie = {
+            'id': new_movie_id,
+            'name': movie_name,
+            'director': director,
+            'year': year,
+            'rating':rating,
+            'url': ''
+        }
+        user_movies.append(movie)
+        data_manager.update_user_movies(user_id, user_movies)
+        return redirect(url_for('favorite_movies', user_id=user_id))
+    else:
+        return "User not found."
 
+#add fetch function
 
 if __name__ == '__main__':
     app.run(debug=True)
