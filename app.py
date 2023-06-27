@@ -55,7 +55,7 @@ def add_movie(user_id):
         new_movie_id = data_manager.generate_movie_id(user_movies)
         movie = {
             'id': new_movie_id,
-            'name': movie_name,
+            'name': movie_name.capitalize(),
             'director': director,
             'year': year,
             'rating':rating,
