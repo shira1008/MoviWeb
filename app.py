@@ -38,6 +38,9 @@ def add_movie(user_id):
     movie_name = request.form.get('movie_name')
     #fetching the data
     movie_data = fetch_data(movie_name)
+    if 'Response' in movie_data and movie_data['Response'] == 'False' and movie_data['Error'] == 'Movie not found!':
+        return "Movie not found in the API."
+    
     user = data_manager.get_user_by_id(user_id)
     # Extract relevant information from the API response
     director = movie_data.get('Director', '')
@@ -45,6 +48,10 @@ def add_movie(user_id):
     rating = movie_data.get('imdbRating', '')
     if user:
         user_movies = user['movies']
+        for movie in user_movies:
+            if movie['name'] == movie_name:
+                return "Movie already exists in the list."
+        
         new_movie_id = data_manager.generate_movie_id(user_movies)
         movie = {
             'id': new_movie_id,
@@ -60,7 +67,7 @@ def add_movie(user_id):
     else:
         return "User not found."
 
-#add fetch function
+
 
 if __name__ == '__main__':
     app.run(debug=True)
