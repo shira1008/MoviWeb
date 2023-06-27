@@ -1,5 +1,6 @@
 import json
-from data_manager_interface import DataManagerInterface
+from datamanager.data_manager_interface import DataManagerInterface
+
 
 class JSONDataManager(DataManagerInterface):
     def __init__(self, filename):
@@ -7,9 +8,13 @@ class JSONDataManager(DataManagerInterface):
 
     def read_file(self):
         """Read and return the contents of the JSON file"""
-        with open(self.filename, "r") as handle:
-            data = json.load(handle)
-        return data
+        try:
+            with open(self.filename, "r") as handle:
+                data = json.load(handle)
+            return data
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error reading JSON file: {str(e)}")
+            return None
     
     def get_all_users(self):
         """Return a list of all users""" 
@@ -27,6 +32,3 @@ class JSONDataManager(DataManagerInterface):
             
         
 
-
-useres_obj = JSONDataManager("data.json")
-print(useres_obj.get_user_movies(1))
