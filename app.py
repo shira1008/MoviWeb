@@ -98,6 +98,8 @@ def update_movie(user_id, movie_id):
         director = request.form.get('director')
         year = request.form.get('year')
         rating = request.form.get('rating')
+        if float(rating) > 10 or float(rating) < 0 : 
+            return "Please enter a value between 0-10"
 
         for a_movie in user_movies:
             if a_movie['id'] == movie_id:
