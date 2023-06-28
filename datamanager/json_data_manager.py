@@ -7,7 +7,7 @@ class JSONDataManager(DataManagerInterface):
         self.filename = filename
 
     def get_user_by_id(self, user_id):
-        """Return the user with the given ID"""
+        """Return the data of user with the given ID"""
         data = self.read_file()
         for user in data:
             if user['id'] == user_id:
@@ -48,7 +48,7 @@ class JSONDataManager(DataManagerInterface):
     def get_user_movies(self, user_id):
         """Return a list of movies for the given user ID"""
         data = self.read_file()
-        print("Data:", data)  # Check the value of data
+        # print("Data:", data)  # Check the value of data
         for user in data:
             if user["id"] == user_id:
                 return user["movies"]
@@ -80,9 +80,9 @@ class JSONDataManager(DataManagerInterface):
         except IOError as e:
             print(f"Error adding user: {str(e)}")
 
-        
+
     def update_user_movies(self, user_id, movies):
-        """Update the movie list after adding the movie for the given user ID"""
+        """Update the movie list after adding or update or delete the movie for the given user ID"""
         data = self.read_file()
         for user in data:
             if user['id'] == user_id:
@@ -96,12 +96,7 @@ class JSONDataManager(DataManagerInterface):
         except IOError as e:
             print(f'Error updating user movies: {str(e)}')
         
-        
 
-    def update_movie(self, movie_id):
-        pass
 
-    def delete_movie(self, movie_id):
-        pass
 
 
