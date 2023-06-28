@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
     <title>add new user</title>
   </head>
   <body>
@@ -13,7 +17,7 @@
         <input type="text" id="name" name="name" required />
       </div>
       <div>
-        <button type="submit" class="btn">Submit</button>
+        <button class="my-btn" type="submit" class="btn">Submit</button>
       </div>
     </form>
     <a href="{{ url_for('home') }}">Back to Home</a>

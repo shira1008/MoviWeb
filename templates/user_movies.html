@@ -3,46 +3,76 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/user_movies.css') }}"
+    />
     <title>User movies</title>
   </head>
   <body>
-    <h1>Favorite Movies of {{user_name}}</h1>
-    <div>
-      <ul class="movies_list">
-        {% for movie in movies %}
-        <li class="movie">
-          <h3>{{ movie["name"] }}</h3>
-          <p>Director: {{ movie["director"] }}</p>
-          <p>Year: {{ movie["year"] }}</p>
-          <p>Rating: {{ movie["rating"] }}</p>
-          <img src="{{ movie['url'] }}" alt="{{ movie['name'] }}" />
-          <!-- getting the data as a placeholder using GET -->
-          <form
-            action="{{ url_for('update_movie', user_id=user_id, movie_id=movie['id']) }}"
-            method="GET"
-          >
-            <input type="submit" value="Edit Movie" />
-          </form>
-
-          <form
-            action="{{ url_for('delete_movie', user_id=user_id, movie_id=movie['id']) }}"
-            method="POST"
-          >
-            <input type="submit" value="Del Movie" />
-          </form>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-    <h1>Add Movie</h1>
-
+    <div class="list-movies-title">
+      <h1>Favorite Movies of {{user_name}}</h1>
+          <h4>Add New Movie</h4>
     <form action="{{ url_for('add_movie', user_id=user_id) }}" method="post">
       <div>
         <label for="movie_name">Movie Name:</label>
         <input type="text" id="movie_name" name="movie_name" required />
       </div>
       <div>
-        <button type="submit" class="btn">Add Movie</button>
+        <button class="my-btn" type="submit" class="btn">Add Movie</button>
+      </div>
+    </div>
+
+      <div>
+        <ul class="movie-grid">
+          {% for movie in movies %}
+          <li class="movie-grid-item">
+            <img
+              class="movie-poster"
+              src="{{ movie['url'] }}"
+              alt="{{ movie['name'] }}"
+            />
+            <div class="movie-info">
+              <h2 class="movie-title">
+                {{ movie["name"] }}
+                <div class="rate_flag">
+                  <span class="movie-rating"
+                    ><i class="fa fa-star"></i> {{ movie["rating"] }}</span
+                  >
+                </div>
+              </h2>
+              <p class="movie-title movie-director">Director: {{ movie["director"] }}</p>
+              <p class="movie-year">Year: {{ movie["year"] }}</p>
+              <div class="movie-btns-container">
+                <!-- getting the data as a placeholder using GET -->
+                <form
+                  action="{{ url_for('update_movie', user_id=user_id, movie_id=movie['id']) }}"
+                  method="GET"
+                >
+                  <input class="my-btn" type="submit" value="Edit Movie" />
+                </form>
+
+                <form
+                  action="{{ url_for('delete_movie', user_id=user_id, movie_id=movie['id']) }}"
+                  method="POST"
+                >
+                  <input class="my-btn" type="submit" value="Del Movie" />
+                </form>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
       </div>
     </form>
     <a href="{{ url_for('list_users') }}">Back to users</a>
