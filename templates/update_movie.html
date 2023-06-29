@@ -7,9 +7,69 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/navbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+    />
     <title>Update Movie</title>
   </head>
   <body>
+    <!-- ===========navbar========== -->
+    <nav class="navbar">
+      <div class="nav-center">
+        <!-- nav header  -->
+        <div class="nav-header">
+          <i class="fa fa-film nav-loggo"></i>
+          <button type="button" class="nav-toggle" id="nav-toggle">
+            <i class="fa fa-bars"></i>
+          </button>
+        </div>
+        <!-- end of nav header -->
+        <!-- links -->
+        <ul class="nav-links" id="nav-links">
+          <!-- link 1 -->
+          <li>
+            <a href="{{ url_for('home') }}" class="nav-link scroll-link"
+              >home</a
+            >
+          </li>
+          <!-- end of link 1 -->
+        </ul>
+        <!-- end of links -->
+
+        <!-- nav icons -->
+        <ul class="nav-icons">
+          <!-- icon 1 -->
+          <li>
+            <a href="http://www.twitter.com" target="_blank" class="nav-icon">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+          <!-- end fo icon 1 -->
+          <!-- icon 2 -->
+          <li>
+            <a href="http://www.facebook.com" target="_blank" class="nav-icon">
+              <i class="fa fa-facebook"></i>
+            </a>
+          </li>
+          <!-- end fo icon 2 -->
+          <!-- icon 3 -->
+          <li>
+            <a href="http://www.instagram.com" target="_blank" class="nav-icon">
+              <i class="fa fa-instagram"></i>
+            </a>
+          </li>
+          <!-- end fo icon 3 -->
+        </ul>
+        <!-- end of nav icons -->
+      </div>
+    </nav>
+    <!-- end navbar -->
     <h1>Update Movie</h1>
     <form
       action="{{ url_for('update_movie', user_id=user_id, movie_id=movie_id) }}"

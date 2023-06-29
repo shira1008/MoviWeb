@@ -55,7 +55,7 @@ def add_movie(user_id):
     if user:
         user_movies = user['movies']
         for movie in user_movies:
-            if movie['name'] == movie_name:
+            if movie['name'] == movie_name.capitalize():
                 return "Movie already exists in the list."
         
         new_movie_id = data_manager.generate_movie_id(user_movies)
