@@ -30,7 +30,7 @@ def favorite_movies(user_id):
 def add_user():
     if request.method == "POST":
         name = request.form.get('name')
-
+        
         data_manager.add_new_user(name)
 
         return redirect(url_for('list_users'))
