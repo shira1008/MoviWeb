@@ -80,7 +80,8 @@ Navbar - small screen
 
 /* js gonna add this class נראה את זה מופיע כי: */
 .show-links {
-  height: 280px;
+  height: 200px;
+  background-color: rgba(255, 200, 155, 0.5);
 }
 
 /* FOR THE BIG SCREEN */

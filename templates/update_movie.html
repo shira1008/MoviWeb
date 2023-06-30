@@ -116,5 +116,12 @@
     <a href="{{ url_for('favorite_movies', user_id=user_id) }}"
       >Back to Favorite Movies</a
     >
+    <script>
+      const nav_toggle = document.querySelector("#nav-toggle");
+      const links = document.querySelector("#nav-links");
+      nav_toggle.addEventListener("click", () => {
+        links.classList.toggle("show-links");
+      });
+    </script>
   </body>
 </html>

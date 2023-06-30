@@ -58,6 +58,9 @@ class JSONDataManager(DataManagerInterface):
     def add_new_user(self, user):
         """Add a new user with an empty movie list"""
         data = self.read_file()
+        if user.lower() in [d["name"].lower() for d in data] :
+            print("User already exist") 
+            return 
 
         # Generate a unique ID for the new user
         user_id = self.generate_user_id(data)

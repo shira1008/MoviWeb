@@ -82,5 +82,12 @@
       <br />
       <a class="my-btn" href="{{ url_for('list_users') }}">list of users</a>
     </div>
+    <script>
+      const nav_toggle = document.querySelector("#nav-toggle");
+      const links = document.querySelector("#nav-links");
+      nav_toggle.addEventListener("click", () => {
+        links.classList.toggle("show-links");
+      });
+    </script>
   </body>
 </html>

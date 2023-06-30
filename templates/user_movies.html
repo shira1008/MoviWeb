@@ -135,5 +135,12 @@
     </div>
 
     <a href="{{ url_for('list_users') }}">Back to users</a>
+    <script>
+      const nav_toggle = document.querySelector("#nav-toggle");
+      const links = document.querySelector("#nav-links");
+      nav_toggle.addEventListener("click", () => {
+        links.classList.toggle("show-links");
+      });
+    </script>
   </body>
 </html>

@@ -14,8 +14,13 @@
     />
     <link
       rel="stylesheet"
+      href="{{ url_for('static', filename='css/add_user.css') }}"
+    />
+    <link
+      rel="stylesheet"
       href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
     />
+
     <title>add new user</title>
   </head>
   <body>
@@ -70,16 +75,25 @@
       </div>
     </nav>
     <!-- end navbar -->
-    <h1>Add User</h1>
-    <form action="/add_user" method="post">
-      <div>
-        <label for="author">Name:</label>
-        <input type="text" id="name" name="name" required />
-      </div>
-      <div>
-        <button class="my-btn" type="submit" class="btn">Submit</button>
-      </div>
-    </form>
+    <div class="section_user">
+      <h1>Add User</h1>
+      <form action="/add_user" method="post">
+        <div>
+          <label for="author">Name:</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div>
+          <button class="my-btn" type="submit" class="btn">Submit</button>
+        </div>
+      </form>
+    </div>
     <a href="{{ url_for('home') }}">Back to Home</a>
+    <script>
+      const nav_toggle = document.querySelector("#nav-toggle");
+      const links = document.querySelector("#nav-links");
+      nav_toggle.addEventListener("click", () => {
+        links.classList.toggle("show-links");
+      });
+    </script>
   </body>
 </html>
