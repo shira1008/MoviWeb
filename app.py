@@ -54,21 +54,13 @@ def add_movie(user_id):
     url = movie_data["Poster"]
     if user:
         user_movies = user['movies']
-        for movie in user_movies:
-            if movie['name'] == movie_name.capitalize():
-                return "Movie already exists in the list."
-        
-        new_movie_id = data_manager.generate_movie_id(user_movies)
-        movie = {
-            'id': new_movie_id,
-            'name': movie_name.capitalize(),
-            'director': director,
-            'year': year,
-            'rating':rating,
-            'url': url
-        }
-        user_movies.append(movie)
+        movie = data_manager.create_movie_obj(user_movies, movie_name,director,year,rating,url)
+        if len(movie) > 0:
+            user_movies.append(movie)
+        else:
+            return "Movie already exists in the list."
         data_manager.update_user_movies(user_id, user_movies)
+
         return redirect(url_for('favorite_movies', user_id=user_id))
     else:
         return "User not found."
@@ -82,32 +74,24 @@ def update_movie(user_id, movie_id):
         return "User not found."
     
     # Retrieve the user's movies
-    # user_movies = user['movies']
     user_movies = data_manager.get_user_movies(user_id)
-    movie = None
-    for one_movie in user_movies:
-        if one_movie['id'] == movie_id:
-            movie = one_movie
-    
+    movie = data_manager.get_movie_by_id(user_movies, movie_id)
+
     if not movie:
         abort(404, "Movie not found.")
             
-    
     if request.method == "POST":
         movie_name = request.form.get('movie_name')
         director = request.form.get('director')
         year = request.form.get('year')
         rating = request.form.get('rating')
-        if float(rating) > 10 or float(rating) < 0 : 
-            return "Please enter a value between 0-10"
 
-        for a_movie in user_movies:
-            if a_movie['id'] == movie_id:
-                    a_movie['name'] = movie_name
-                    a_movie['director'] = director
-                    a_movie['year'] = year
-                    a_movie['rating'] = rating
-
+        #check the rating value
+        if rating !=  "N/A":
+            if float(rating) > 10 or float(rating) < 0 : 
+                return "Please enter a value between 0-10"
+            
+        data_manager.update_movie_details(movie, movie_name, director, year, rating)
         data_manager.update_user_movies(user_id, user_movies)
         return redirect(url_for('favorite_movies', user_id=user_id))
 
