@@ -25,7 +25,7 @@ def authenticate_user(name, password):
 @app.route('/')
 def home():
     """ Return the index.html -> home page"""
-    return render_template('index.html')
+    return render_template('index.html', user=session.get('user'))
 
 # Route for the user login form
 @app.route('/login', methods=['GET', 'POST'])
@@ -39,15 +39,16 @@ def login():
             session['user'] = user
             return redirect(url_for('favorite_movies', user_id=user['id']))
         else:
-            return render_template('login.html', error='Invalid credentials')
-    return render_template('login.html')
+            return render_template('login.html', error='Invalid name or password')
+    return render_template('login.html', user=session.get('user'))
 
 
 @app.route('/users')
 def list_users():
     """ Return the users page that display the users """
     users = data_manager.get_all_users()
-    return render_template('users.html', users=users)
+    
+    return render_template('users.html', users=users, user=session.get('user'))
 
 @app.route('/users/<int:user_id>')
 def favorite_movies(user_id):
@@ -63,7 +64,7 @@ def favorite_movies(user_id):
             if not user:
                 abort(404, "User not found.")
             user_name = user["name"]
-            return render_template('user_movies.html', movies=movies, user_id=user_id, user_name=user_name)
+            return render_template('user_movies.html', movies=movies, user_id=user_id, user_name=user_name, user=session.get('user'))
         else:
             # Redirect to an appropriate page if the user is trying to access other users' movies
             return redirect('/login')  # You can customize the redirection destination as per your requirement - here i should able accses for a profile
