@@ -14,6 +14,13 @@ class JSONDataManager(DataManagerInterface):
                 return user
         return None
     
+    def get_movie_by_id(self, user_movies, movie_id):
+        """Return the data of a movie with the given ID"""
+        for movie in user_movies:
+            if movie['id'] == movie_id:
+                return movie
+        return None
+    
     def generate_user_id(self, data):
         """Generate a unique user ID for a new user"""
         user_ids = [user["id"] for user in data]
@@ -82,6 +89,31 @@ class JSONDataManager(DataManagerInterface):
             print("User added successfully.")
         except IOError as e:
             print(f"Error adding user: {str(e)}")
+
+
+    def create_movie_obj(self, user_movies, movie_name,director,year,rating,url):
+        """Return the movie object if not return an empty one"""
+        for movie in user_movies:
+            if movie['name'] == movie_name.capitalize():
+                return {}
+        
+        new_movie_id = self.generate_movie_id(user_movies)
+        movie = {
+            'id': new_movie_id,
+            'name': movie_name.capitalize(),
+            'director': director,
+            'year': year,
+            'rating':rating,
+            'url': url
+        }
+        return movie
+    
+    def update_movie_details(self, movie, movie_name, director, year, rating):
+        """updating the movie details"""
+        movie['name'] = movie_name
+        movie['director'] = director
+        movie['year'] = year
+        movie['rating'] = rating
 
 
     def update_user_movies(self, user_id, movies):

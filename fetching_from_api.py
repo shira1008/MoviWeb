@@ -1,5 +1,6 @@
 import requests
 from config import API_KEY
+import json
 
 
 def fetch_data(title):
