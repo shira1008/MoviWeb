@@ -8,16 +8,19 @@ data_manager = JSONDataManager('data.json')
 
 @app.route('/')
 def home():
+    """ Return the index.html -> home page"""
     return render_template('index.html')
 
 
 @app.route('/users')
 def list_users():
+    """ Return the users page that display the users """
     users = data_manager.get_all_users()
     return render_template('users.html', users=users)
 
 @app.route('/users/<int:user_id>')
 def favorite_movies(user_id):
+    """Return the page for each user"""
     movies = data_manager.get_user_movies(user_id)
     user = data_manager.get_user_by_id(user_id)
     if not user:
@@ -28,6 +31,7 @@ def favorite_movies(user_id):
 
 @app.route('/add_user', methods=['GET','POST'])
 def add_user():
+    """ Add a new user to the app """
     if request.method == "POST":
         name = request.form.get('name')
         
@@ -40,6 +44,7 @@ def add_user():
 
 @app.route('/add_movie/<int:user_id>', methods=['POST'])
 def add_movie(user_id):
+    """ Add a new movie to the app form the api """
     movie_name = request.form.get('movie_name')
     #fetching the data
     movie_data = fetch_data(movie_name)
@@ -68,6 +73,7 @@ def add_movie(user_id):
 
 @app.route("/users/<int:user_id>/update_movie/<int:movie_id>", methods=["GET", "POST"])
 def update_movie(user_id, movie_id):
+    """ Update a movie, u can update the name, rating, year, director"""
     #check the user
     user = data_manager.get_user_by_id(user_id)
     if not user:
@@ -100,6 +106,7 @@ def update_movie(user_id, movie_id):
 
 @app.route("/users/<int:user_id>/delete_movie/<int:movie_id>", methods=["POST"])
 def delete_movie(user_id, movie_id):
+    """ Handle the delete movie"""
     user = data_manager.get_user_by_id(user_id)
     if not user:
         abort(404, "User not found.")
@@ -122,6 +129,7 @@ def delete_movie(user_id, movie_id):
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """ Return an html page for the 404 error"""
     return render_template('404.html'), 404
 
 if __name__ == '__main__':
