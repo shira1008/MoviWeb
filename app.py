@@ -178,7 +178,7 @@ def delete_movie(user_id, movie_id):
 def logout():
     # Remove the user information from the session
     session.pop('user', None)
-    return redirect('/login')
+    return redirect('/')
 
 @app.errorhandler(404)
 def page_not_found(e):

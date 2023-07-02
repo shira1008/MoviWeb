@@ -28,7 +28,7 @@
     {% include 'navbar.html' %}
     <!-- end navbar -->
     <div class="header">
-      <h3>hello</h3>
+      <h3>{% if user %} Hello, {{ user.name }} {% else %} {% endif %}</h3>
       <h1>Welcome to Movies app</h1>
       <a class="my-btn" href="{{ url_for('login') }}">Login</a>
       <br />

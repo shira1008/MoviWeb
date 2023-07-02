@@ -46,7 +46,7 @@
       <li class="nav-greeting">
         {% if user %} Hello, {{ user.name }}
         <a class="my-btn" href="{{ url_for('logout') }}">Logout</a>
-        {% else %} Hello, please
+        {% else %}
         <a class="my-btn" href="{{ url_for('login') }}">LogIn</a> {% endif %}
       </li>
     </ul>
