@@ -1,15 +1,46 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort,session
 from datamanager.json_data_manager import JSONDataManager
 from fetching_from_api import fetch_data
+import hashlib
+import secrets
+
+secret = secrets.token_hex(16)
 
 app = Flask(__name__)
+app.secret_key = secret
 data_manager = JSONDataManager('data.json')
+
+def authenticate_user(name, password):
+    """Authenticate a user based on the provided name and password"""
+    users = data_manager.get_all_users()
+
+    for user in users:
+        if user['name'] == name:
+            hashed_password = hashlib.sha256(password.encode()).hexdigest()
+            if user['password'] == hashed_password:
+                return user
+    return None
 
 
 @app.route('/')
 def home():
     """ Return the index.html -> home page"""
     return render_template('index.html')
+
+# Route for the user login form
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        password = request.form.get('password')
+        user = authenticate_user(name, password)
+        if user:
+            # Store the authenticated user's information in the session
+            session['user'] = user
+            return redirect(url_for('favorite_movies', user_id=user['id']))
+        else:
+            return render_template('login.html', error='Invalid credentials')
+    return render_template('login.html')
 
 
 @app.route('/users')
@@ -20,13 +51,27 @@ def list_users():
 
 @app.route('/users/<int:user_id>')
 def favorite_movies(user_id):
-    """Return the page for each user"""
-    movies = data_manager.get_user_movies(user_id)
-    user = data_manager.get_user_by_id(user_id)
-    if not user:
-        abort(404, "User not found.")
-    user_name = user["name"]
-    return render_template('user_movies.html', movies=movies, user_id=user_id,  user_name= user_name )
+    # Check if the user is authenticated
+    if 'user' in session:
+        user = session['user']
+        authenticated_user_id = user['id']
+
+        # Check if the authenticated user is accessing their own movies
+        if user_id == authenticated_user_id:
+            movies = data_manager.get_user_movies(user_id)
+            user = data_manager.get_user_by_id(user_id)
+            if not user:
+                abort(404, "User not found.")
+            user_name = user["name"]
+            return render_template('user_movies.html', movies=movies, user_id=user_id, user_name=user_name)
+        else:
+            # Redirect to an appropriate page if the user is trying to access other users' movies
+            return redirect('/login')  # You can customize the redirection destination as per your requirement - here i should able accses for a profile
+
+    else:
+        # Redirect to the login page if the user is not authenticated
+        return redirect('/login')
+
 
 
 @app.route('/add_user', methods=['GET','POST'])
@@ -34,9 +79,11 @@ def add_user():
     """ Add a new user to the app """
     if request.method == "POST":
         name = request.form.get('name')
+        password = request.form.get('password')
         
-        data_manager.add_new_user(name)
-
+        if not data_manager.add_new_user(name, password):
+            return render_template('add_user.html', error='User already exists')
+        
         return redirect(url_for('list_users'))
         
     return render_template('add_user.html')
@@ -125,7 +172,12 @@ def delete_movie(user_id, movie_id):
     data_manager.update_user_movies(user_id, user_movies)
     return redirect(url_for('favorite_movies', user_id=user_id))
 
-   
+# Route for logout
+@app.route('/logout')
+def logout():
+    # Remove the user information from the session
+    session.pop('user', None)
+    return redirect('/login')
 
 @app.errorhandler(404)
 def page_not_found(e):

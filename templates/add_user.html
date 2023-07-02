@@ -83,9 +83,16 @@
           <input type="text" id="name" name="name" required />
         </div>
         <div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <div>
           <button class="my-btn" type="submit" class="btn">Submit</button>
         </div>
       </form>
+      {% if error %}
+      <p class="error">{{ error }}</p>
+      {% endif %}
     </div>
     <a href="{{ url_for('home') }}">Back to Home</a>
     <script>

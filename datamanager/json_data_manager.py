@@ -1,5 +1,6 @@
 import json
 from datamanager.data_manager_interface import DataManagerInterface
+import hashlib
 
 
 class JSONDataManager(DataManagerInterface):
@@ -62,20 +63,22 @@ class JSONDataManager(DataManagerInterface):
         return []
 
             
-    def add_new_user(self, user):
+    def add_new_user(self, user, password):
         """Add a new user with an empty movie list"""
         data = self.read_file()
         if user.lower() in [d["name"].lower() for d in data] :
             print("User already exist") 
-            return 
+            return False # User already exists
 
         # Generate a unique ID for the new user
         user_id = self.generate_user_id(data)
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         # Create the new user entry
         new_user = {
             "id": user_id,
             "name": user,
+            'password': hashed_password,
             "movies": []
         }
 
@@ -89,6 +92,7 @@ class JSONDataManager(DataManagerInterface):
             print("User added successfully.")
         except IOError as e:
             print(f"Error adding user: {str(e)}")
+        return True
 
 
     def create_movie_obj(self, user_movies, movie_name,director,year,rating,url):
