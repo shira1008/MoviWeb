@@ -4,6 +4,7 @@ from fetching_from_api import fetch_data
 import hashlib
 import secrets
 
+# to crate a secret key
 secret = secrets.token_hex(16)
 
 app = Flask(__name__)
@@ -81,8 +82,9 @@ def add_user():
     if request.method == "POST":
         name = request.form.get('name')
         password = request.form.get('password')
+        profile_picture_url = request.form.get('profile_picture_url')
         
-        if not data_manager.add_new_user(name, password):
+        if not data_manager.add_new_user(name, password, profile_picture_url):
             return render_template('add_user.html', error='User already exists')
         
         return redirect(url_for('list_users'))
@@ -178,7 +180,38 @@ def delete_movie(user_id, movie_id):
 def logout():
     # Remove the user information from the session
     session.pop('user', None)
+    # Redirect to home page
     return redirect('/')
+
+# Route for profiles
+@app.route("/user/<string:username>")
+def profile_page(username):
+    # Check if the user is logged in
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    # Create an instance of the data manager
+    # data_manager = JSONDataManager("data.json")
+
+    # Get all users
+    users = data_manager.get_all_users()
+
+    # Find the user by username
+    user = next((user for user in users if user["name"] == username), None)
+
+    if user:
+        # Retrieve the profile picture URL
+        profile_picture_url = user.get("profile_picture_url", "")
+
+        # Render the template with the user and profile picture URL
+        return render_template("profile.html", user=user, profile_picture_url=profile_picture_url)
+    else:
+        # Handle the case where the user does not exist
+        return "User not found"
+
+
+
+    
 
 @app.errorhandler(404)
 def page_not_found(e):
