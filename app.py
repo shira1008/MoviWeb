@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort,session
+from flask import Flask, render_template, request, redirect, url_for, abort, session, flash
 from datamanager.json_data_manager import JSONDataManager
 from fetching_from_api import fetch_data
 import hashlib
@@ -12,7 +12,7 @@ app.secret_key = secret
 data_manager = JSONDataManager('data.json')
 
 def authenticate_user(name, password):
-    """Authenticate a user based on the provided name and password"""
+    """ Authenticate a user based on the provided name and password"""
     users = data_manager.get_all_users()
 
     for user in users:
@@ -28,9 +28,10 @@ def home():
     """ Return the index.html -> home page"""
     return render_template('index.html', user=session.get('user'))
 
-# Route for the user login form
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """ Route for the user login form """
     if request.method == 'POST':
         name = request.form.get('name')
         password = request.form.get('password')
@@ -53,6 +54,7 @@ def list_users():
 
 @app.route('/users/<int:user_id>')
 def favorite_movies(user_id):
+    """ Return the page with the favorite movie of a user """
     # Check if the user is authenticated
     if 'user' in session:
         user = session['user']
@@ -67,8 +69,8 @@ def favorite_movies(user_id):
             user_name = user["name"]
             return render_template('user_movies.html', movies=movies, user_id=user_id, user_name=user_name, user=session.get('user'))
         else:
-            # Redirect to an appropriate page if the user is trying to access other users' movies
-            return redirect('/login')  # You can customize the redirection destination as per your requirement - here i should able accses for a profile
+            # Redirect to an login page if the user is trying to access other users' movies
+            return redirect('/login')  
 
     else:
         # Redirect to the login page if the user is not authenticated
@@ -175,10 +177,11 @@ def delete_movie(user_id, movie_id):
     data_manager.update_user_movies(user_id, user_movies)
     return redirect(url_for('favorite_movies', user_id=user_id))
 
+
 # Route for logout
 @app.route('/logout')
 def logout():
-    # Remove the user information from the session
+    """ Remove the user information from the session"""
     session.pop('user', None)
     # Redirect to home page
     return redirect('/')
@@ -186,12 +189,11 @@ def logout():
 # Route for profiles
 @app.route("/user/<string:username>")
 def profile_page(username):
+    """ Route for the profile page"""
+
     # Check if the user is logged in
     if "user" not in session:
         return redirect(url_for("login"))
-
-    # Create an instance of the data manager
-    # data_manager = JSONDataManager("data.json")
 
     # Get all users
     users = data_manager.get_all_users()
@@ -210,8 +212,29 @@ def profile_page(username):
         return "User not found"
 
 
+@app.route('/update_profile_pic', methods=['GET', 'POST'])
+def update_profile_pic():
+    """ Route for updating the profile pic url"""
 
-    
+    if request.method == 'GET':
+        # Handle the GET request
+        # Render the form for uploading the profile picture
+        return render_template('edit_profile_pic.html')
+
+    if request.method == 'POST':
+        # Handle the POST request
+        profile_picture_url = request.form.get('profile_picture_url')
+        if not profile_picture_url:
+            flash('No profile picture URL provided')
+            return redirect(url_for('update_profile_pic'))
+
+        # Update the user's profile picture URL in the data store
+        user_id = session['user']['id']
+        data_manager.update_user_profile_picture(user_id, profile_picture_url)
+
+        flash('Profile picture updated successfully')
+        return redirect(url_for('profile_page', username=session['user']['name']))
+
 
 @app.errorhandler(404)
 def page_not_found(e):

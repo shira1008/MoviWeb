@@ -30,9 +30,11 @@
     <div class="header">
       <h3>{% if user %} Hello, {{ user.name }} {% else %} {% endif %}</h3>
       <h1>Welcome to Movies app</h1>
+      {% if user %} {% else %}
       <a class="my-btn" href="{{ url_for('login') }}">Login</a>
       <br />
-      <a class="my-btn" href="{{ url_for('add_user') }}">Sign up</a>
+      <a class="my-btn" href="{{ url_for('add_user') }}">Sign up</a> {% endif %}
+
       <br />
       <a class="my-btn" href="{{ url_for('list_users') }}">list of users</a>
     </div>

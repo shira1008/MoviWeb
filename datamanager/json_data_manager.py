@@ -138,6 +138,20 @@ class JSONDataManager(DataManagerInterface):
             print(f'Error updating user movies: {str(e)}')
         
 
-
+    def update_user_profile_picture(self, user_id, profile_picture_url):
+        """Update the profile picture URL for the user with the given ID"""
+        data = self.read_file()
+        for user in data:
+            if user['id'] == user_id:
+                user['profile_picture_url'] = profile_picture_url
+                break
+        
+        # Write the updated data to the file
+        try:
+            with open(self.filename, 'w') as handle:
+                json.dump(data, handle)
+            print('Profile picture updated successfully.')
+        except IOError as e:
+            print(f'Error updating profile picture: {str(e)}')
 
 
