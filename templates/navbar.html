@@ -16,7 +16,19 @@
         <a href="{{ url_for('home') }}" class="nav-link scroll-link">home</a>
       </li>
       <!-- end of link 1 -->
+
+      <li>
+        {% if user %}
+        <a
+          href="{{ url_for('profile_page', username=user['name']) }}"
+          class="nav-link scroll-link"
+          >profile</a
+        >
+
+        {% else %} {% endif %}
+      </li>
     </ul>
+
     <!-- end of links -->
 
     <!-- nav icons -->

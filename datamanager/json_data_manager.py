@@ -63,7 +63,7 @@ class JSONDataManager(DataManagerInterface):
         return []
 
             
-    def add_new_user(self, user, password):
+    def add_new_user(self, user, password, profile_picture_url):
         """Add a new user with an empty movie list"""
         data = self.read_file()
         if user.lower() in [d["name"].lower() for d in data] :
@@ -73,12 +73,14 @@ class JSONDataManager(DataManagerInterface):
         # Generate a unique ID for the new user
         user_id = self.generate_user_id(data)
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    
 
         # Create the new user entry
         new_user = {
             "id": user_id,
             "name": user,
             'password': hashed_password,
+            'profile_picture_url':profile_picture_url,
             "movies": []
         }
 
