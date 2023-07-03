@@ -12,6 +12,11 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/navbar.css') }}"
     />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/add_user.css') }}"
+    />
     <link
       rel="stylesheet"
       href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
@@ -19,19 +24,21 @@
   </head>
   <body>
     {% include 'navbar.html' %}
-    <h1>Login</h1>
-    <a href="{{ url_for('add_user') }}">Dont have an account? click here</a>
-    <form action="/login" method="post">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required /><br />
+    <div class="section_user">
+      <h1>Login</h1>
+      <a href="{{ url_for('add_user') }}">Dont have an account? click here</a>
+      <form class="my-form" action="/login" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required /><br />
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required /><br />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required /><br />
 
-      <input type="submit" value="Login" />
-    </form>
-    {% if error %}
-    <p class="error">{{ error }}</p>
-    {% endif %}
+        <button class="my-btn" type="submit" value="Login">Submit</button>
+        {% if error %}
+        <p class="my-form-alert">{{ error }}</p>
+        {% endif %}
+      </form>
+    </div>
   </body>
 </html>
