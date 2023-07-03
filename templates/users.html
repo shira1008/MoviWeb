@@ -33,6 +33,9 @@
         {% for user in users%}
         <li class="user">
           <a href="/users/{{ user['id'] }}">{{ user["name"] }}</a>
+          <a href="/users/{{ user['id'] }}">
+            <img src="{{ user.profile_picture_url }}" alt="Profile Picture"
+          /></a>
         </li>
         {% endfor %}
       </ul>

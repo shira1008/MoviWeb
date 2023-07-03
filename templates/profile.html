@@ -10,8 +10,14 @@
 
     <link
       rel="stylesheet"
+      href="{{ url_for('static', filename='css/profile.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
       href="{{ url_for('static', filename='css/navbar.css') }}"
     />
+
     <link
       rel="stylesheet"
       href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
@@ -24,10 +30,10 @@
     {% include 'navbar.html' %}
     <!-- end navbar -->
     <div class="header">
-      <h1>User Profile</h1>
-      <p>Username: {{ user.name }}</p>
+      <h1>{{ user.name }}</h1>
+
       <img src="{{profile_picture_url}}" alt="pic" />
-      <a href="/users/{{ user['id'] }}">my movies</a>
+      <a class="my-btn" href="/users/{{ user['id'] }}">my movies</a>
     </div>
     <script>
       const nav_toggle = document.querySelector("#nav-toggle");
