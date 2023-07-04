@@ -1,2 +1,5 @@
 #for the API key
 config.py
+
+
+__pycache__/
