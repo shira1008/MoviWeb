@@ -1,10 +1,10 @@
 import requests
-
+from config import API_KEY
 import json
 
 
 def fetch_data(title):
-    key = "af27ecd8"
+    key = API_KEY
     url = f"https://www.omdbapi.com/?apikey={key}&t={title}"
     try:
         response = requests.get(url)
