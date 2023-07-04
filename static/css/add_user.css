@@ -4,6 +4,8 @@
   color: rgb(31, 29, 29);
   text-align: center;
   font-size: 16pt;
+  display: flex;
+  flex-direction: column;
 }
 
 .user a {
@@ -14,8 +16,8 @@
 }
 
 .user img {
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
   margin: 0 auto;
@@ -23,4 +25,11 @@
 
 .user {
   padding: 1rem;
+}
+
+.users_list {
+  display: flex;
+  margin: 0 auto;
+  width: 500px;
+  flex-wrap: wrap;
 }
