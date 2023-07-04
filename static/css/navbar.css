@@ -102,8 +102,8 @@ Navbar - small screen
     /* border: 1px solid red; */
     height: auto;
     display: flex;
-    transform: translateY(30%);
-    transform: translateX(30%);
+    transform: translateY(110%);
+    transform: translateX(110%);
   }
 
   .nav-header {
