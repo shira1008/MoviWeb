@@ -20,7 +20,7 @@
       <li>
         {% if user %}
         <a
-          href="{{ url_for('profile_page', username=user['name']) }}"
+          href="{{ url_for('profile_page', user_id=user['id'], username=user['name']) }}"
           class="nav-link scroll-link"
           >profile</a
         >
@@ -56,7 +56,7 @@
       <!-- end fo icon 3 -->
 
       <li class="nav-greeting">
-        {% if user %} Hello, {{ user.name }}
+        {% if user %} Hello, {{ session['user']['name'] }}
         <a class="my-btn" href="{{ url_for('logout') }}">Logout</a>
         {% else %}
         <a class="my-btn" href="{{ url_for('login') }}">LogIn</a> {% endif %}

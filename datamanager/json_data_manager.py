@@ -7,6 +7,26 @@ class JSONDataManager(DataManagerInterface):
     def __init__(self, filename):
         self.filename = filename
 
+    def read_file(self):
+        """Read and return the contents of the JSON file"""
+        try:
+            with open(self.filename, "r") as handle:
+                data = json.load(handle)
+            return data
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error reading JSON file: {str(e)}")
+            return None
+        
+    def write_file(self, data):
+        """Write the given data to the JSON file"""
+        try:
+            with open(self.filename, "w") as handle:
+                json.dump(data, handle)
+            print("File written successfully.")
+        except IOError as e:
+            print(f"Error writing to JSON file: {str(e)}")
+
+
     def get_user_by_id(self, user_id):
         """Return the data of user with the given ID"""
         data = self.read_file()
@@ -38,16 +58,7 @@ class JSONDataManager(DataManagerInterface):
         else:
             return 1
 
-    def read_file(self):
-        """Read and return the contents of the JSON file"""
-        try:
-            with open(self.filename, "r") as handle:
-                data = json.load(handle)
-            return data
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"Error reading JSON file: {str(e)}")
-            return None
-    
+
     def get_all_users(self):
         """Return a list of all users""" 
         data = self.read_file()
@@ -130,12 +141,7 @@ class JSONDataManager(DataManagerInterface):
                 user['movies'] = movies
                 
         # Write the updated data to the file
-        try:
-            with open(self.filename, 'w') as handle:
-                json.dump(data, handle)
-            print('User movies updated successfully.')
-        except IOError as e:
-            print(f'Error updating user movies: {str(e)}')
+        self.write_file(data)
         
 
     def update_user_profile_picture(self, user_id, profile_picture_url):
@@ -147,11 +153,16 @@ class JSONDataManager(DataManagerInterface):
                 break
         
         # Write the updated data to the file
-        try:
-            with open(self.filename, 'w') as handle:
-                json.dump(data, handle)
-            print('Profile picture updated successfully.')
-        except IOError as e:
-            print(f'Error updating profile picture: {str(e)}')
+        self.write_file(data)
 
 
+    def authenticate_user(self, name, password):
+        """ Authenticate a user based on the provided name and password"""
+        users = self.get_all_users()
+
+        for user in users:
+            if user['name'] == name:
+                hashed_password = hashlib.sha256(password.encode()).hexdigest()
+                if user['password'] == hashed_password:
+                    return user
+        return None

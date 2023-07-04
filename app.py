@@ -11,17 +11,6 @@ app = Flask(__name__)
 app.secret_key = secret
 data_manager = JSONDataManager('data.json')
 
-def authenticate_user(name, password):
-    """ Authenticate a user based on the provided name and password"""
-    users = data_manager.get_all_users()
-
-    for user in users:
-        if user['name'] == name:
-            hashed_password = hashlib.sha256(password.encode()).hexdigest()
-            if user['password'] == hashed_password:
-                return user
-    return None
-
 
 @app.route('/')
 def home():
@@ -31,11 +20,13 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """ Route for the user login form """
+    """ Route for the user login form 
+    the session object is used to store the authenticated user's information after successful login
+    """
     if request.method == 'POST':
         name = request.form.get('name')
         password = request.form.get('password')
-        user = authenticate_user(name, password)
+        user = data_manager.authenticate_user(name, password)
         if user:
             # Store the authenticated user's information in the session
             session['user'] = user
@@ -186,9 +177,9 @@ def logout():
     # Redirect to home page
     return redirect('/')
 
-# Route for profiles
-@app.route("/user/<string:username>")
-def profile_page(username):
+
+@app.route("/user/<int:user_id>/<string:username>")
+def profile_page(user_id, username):
     """ Route for the profile page"""
 
     # Check if the user is logged in
@@ -206,7 +197,7 @@ def profile_page(username):
         profile_picture_url = user.get("profile_picture_url", "")
 
         # Render the template with the user and profile picture URL
-        return render_template("profile.html", user=user, profile_picture_url=profile_picture_url)
+        return render_template("profile.html", user=user, profile_picture_url=profile_picture_url, current_id = user_id)
     else:
         # Handle the case where the user does not exist
         return "User not found"
@@ -216,10 +207,14 @@ def profile_page(username):
 def update_profile_pic():
     """ Route for updating the profile pic url"""
 
+     # Check if the user is logged in
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
     if request.method == 'GET':
         # Handle the GET request
         # Render the form for uploading the profile picture
-        return render_template('edit_profile_pic.html')
+        return render_template('edit_profile_pic.html', user=session.get('user'))
 
     if request.method == 'POST':
         # Handle the POST request
@@ -232,8 +227,8 @@ def update_profile_pic():
         user_id = session['user']['id']
         data_manager.update_user_profile_picture(user_id, profile_picture_url)
 
-        flash('Profile picture updated successfully')
-        return redirect(url_for('profile_page', username=session['user']['name']))
+      
+        return redirect(url_for('profile_page', username=session['user']['name'],  user_id = user_id))
 
 
 @app.errorhandler(404)

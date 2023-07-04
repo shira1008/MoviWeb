@@ -32,8 +32,10 @@
       <ul class="users_list">
         {% for user in users%}
         <li class="user">
-          <a href="/users/{{ user['id'] }}">{{ user["name"] }}</a>
-          <a href="/users/{{ user['id'] }}">
+          <a href="/user/{{ user['id'] }}/{{ user['name'] }}"
+            >{{ user["name"] }}</a
+          >
+          <a href="/user/{{ user['id'] }}/{{ user['name'] }}">
             <img src="{{ user.profile_picture_url }}" alt="Profile Picture"
           /></a>
         </li>

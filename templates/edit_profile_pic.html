@@ -35,6 +35,13 @@
           placeholder="Enter image URL"
         />
         <button class="my-btn" type="submit">Update Profile Picture</button>
+        {% with messages = get_flashed_messages() %} {% if messages %}
+        <ul class="my-form-alert">
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %} {% endwith %}
       </form>
     </div>
   </body>
