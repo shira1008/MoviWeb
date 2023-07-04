@@ -4,7 +4,7 @@ import json
 
 
 def fetch_data(title):
-    key = API_KEY
+    key = "af27ecd8"
     url = f"https://www.omdbapi.com/?apikey={key}&t={title}"
     try:
         response = requests.get(url)
