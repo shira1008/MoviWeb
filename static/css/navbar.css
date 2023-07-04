@@ -102,6 +102,7 @@ Navbar - small screen
     /* border: 1px solid red; */
     height: auto;
     display: flex;
+
     transform: translateY(110%);
     transform: translateX(110%);
   }

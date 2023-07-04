@@ -30,6 +30,6 @@
 .users_list {
   display: flex;
   margin: 0 auto;
-  width: 500px;
+  width: inherit;
   flex-wrap: wrap;
 }
