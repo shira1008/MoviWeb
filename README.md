@@ -21,7 +21,7 @@ The MoviWeb App is a Flask-based web application that allows users to track thei
 ## File Structure
 
 - `app.py`: Main entry point of the application.
-- `config.py`: Containing the API key 
+- `config.py`: Containing the API key.
 - `datamanager/`: Directory containing the data manager module.
 - `datamanager/json_data_manager.py`: Module for managing data stored in JSON format.
 - `fetching_from_api.py`: Module for fetching movie data from an external API.
