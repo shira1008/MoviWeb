@@ -23,8 +23,8 @@ class Movies(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
     director = db.Column(db.String(100), nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    rating = db.Column(db.Float)
+    year = db.Column(db.String(4), nullable=False)  # Store year as a string
+    rating = db.Column(db.String(3))  # Store rating as a string
     url = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 

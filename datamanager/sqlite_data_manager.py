@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datamanager.data_manager_interface import DataManagerInterface
 from models import db, Users, Movies
 import hashlib
+import uuid
 
 
 
@@ -12,11 +13,38 @@ class SQLiteDataManager(DataManagerInterface):
            so we implement an empty method body."""
         pass
     
+    def to_movie_instance(self, movie_data):
+        """Convert a movie dictionary to a Movies instance"""
+        if isinstance(movie_data, Movies):
+            return movie_data
+        return Movies(**movie_data)
+
+    def to_movie_dict(self, movie):
+        """Convert a Movies instance to a dictionary"""
+        if isinstance(movie, dict):
+            return movie
+        return movie.to_dict()
+
+
+    def movies_to_dict(self, movies):
+        """Convert a list of Movies objects to a list of dictionaries"""
+        return [movie.to_dict() for movie in movies]
+
+
     def get_user_by_id(self, user_id):
         """Return the data of user with the given ID"""
         user = Users.query.get(user_id)
         if user:
-            return user.to_dict()
+            user_dict = user.to_dict()
+            user_dict['movies'] = [movie.to_dict() for movie in user.movies]
+            return user_dict
+        return None
+    
+    def get_movie_by_id(self, movies, movie_id):
+        """Get the movie object from the list of movies with the given movie_id"""
+        for movie in movies:
+            if movie['id'] == movie_id:
+                return movie
         return None
     
     def get_all_users(self):
@@ -28,7 +56,7 @@ class SQLiteDataManager(DataManagerInterface):
         """Return a list of all movies of a specific user"""
         user = Users.query.get(user_id)
         if user:
-                return [movie.to_dict() for movie in user.movies]
+            return [movie.to_dict() for movie in user.movies]
         return []
         
             
@@ -43,39 +71,93 @@ class SQLiteDataManager(DataManagerInterface):
         db.session.add(new_user)
         db.session.commit()
         return True
-    
+        
 
-    def create_movie_obj(self, user_movies, movie_name, director, year, rating, url):
+
+    def create_movie_obj(self, user_movies, movie_name, director, year, rating, url, user_id):
         """Return the movie object if not return an empty one"""
         for movie in user_movies:
-            if movie.name == movie_name.capitalize():
-                return {}
+            if isinstance(movie, dict):
+                # Handle dict data case
+                if movie['name'].lower() == movie_name.lower():
+                    return None
+            else:
+                # Handle SQLite data case
+                if movie.name.lower() == movie_name.lower():
+                    return None
 
-        new_movie_id = self.generate_movie_id(user_movies)
-        movie = Movies(id=new_movie_id, name=movie_name.capitalize(), director=director, year=year,
-                       rating=rating, url=url)
-        return movie
-    
+        new_movie = Movies(
+            name=movie_name.capitalize(),
+            director=director,
+            year=year,
+            rating=rating,
+            url=url,
+            user_id=user_id,
+        )
+
+        # Add the new movie to the database
+        db.session.add(new_movie)
+        db.session.commit()
+
+        return new_movie
     
     def update_movie_details(self, movie, movie_name, director, year, rating):
-        """Update the movie details"""
-        movie.name = movie_name
-        movie.director = director
-        movie.year = year
-        movie.rating = rating
-
-
-    def update_user_movies(self, user_id, new_movie):
-        """Update the movie list by adding a new movie for the given user ID"""
+        """Update the details of the given movie"""
+        if isinstance(movie, dict):  # JSON data case
+            # In the JSON data case, we need to update the dictionary
+            movie.update({
+                "name": movie_name,
+                "director": director,
+                "year": year,
+                "rating": rating
+            })
+            # Find and update the movie object in the database (if exists)
+            movie_obj = Movies.query.get(movie['id'])
+            if movie_obj:
+                movie_obj.name = movie_name
+                movie_obj.director = director
+                movie_obj.year = year
+                movie_obj.rating = rating
+                db.session.commit()
+        
+        
+        
+    def delete_movie(self, user_id, movie_id):
+        """Delete a movie from the user's movie list."""
         user = Users.query.get(user_id)
         if user:
-            # Get the list of user's movies as dictionary-like objects
-            user_movies = [movie.to_dict() for movie in user.movies]
-            # Append the new movie to the list of user's movies
-            user_movies.append(new_movie.to_dict())
-            # Update the user's movies in the database
-            user.movies = [Movies(**movie_data) for movie_data in user_movies]
-            db.session.commit()
+            user_movies = user.movies
+            movie_to_delete = next((movie for movie in user_movies if movie.id == movie_id), None)
+            if movie_to_delete:
+                user.movies.remove(movie_to_delete)
+                db.session.delete(movie_to_delete)
+                db.session.commit()
+                db.session.commit()
+
+
+
+    def update_user_movies(self, user_id, movies):
+        user = Users.query.get(user_id)
+        try:
+            if user:
+                if isinstance(movies[0], dict):  # dictionary data case 
+                    # convert dictionaries to Movie objects
+                    movies = [self.to_movie_instance(movie) for movie in movies]
+                    # Update the user_id attribute for each movie
+                    for movie in movies:
+                        movie.user_id = user_id
+                else:  # SQLite data case 
+                    # directly modify the attributes of the Movies instance
+                    # Update the user_id attribute for each movie
+                    for movie in movies:
+                        if movie.user_id != user_id:
+                            movie.user_id = user_id
+
+                user.movies = movies
+                print("Updated user movies:", [movie.to_dict() for movie in movies])
+                db.session.commit()
+        except Exception as e:
+            print(e)
 
 
 
