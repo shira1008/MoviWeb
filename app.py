@@ -1,15 +1,28 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, session, flash
 from datamanager.json_data_manager import JSONDataManager
+from datamanager.sqlite_data_manager import SQLiteDataManager
 from fetching_from_api import fetch_data
+from models import db
 import hashlib
 import secrets
+import os
 
 # to crate a secret key
 secret = secrets.token_hex(16)
 
 app = Flask(__name__)
 app.secret_key = secret
-data_manager = JSONDataManager('data.json')
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(current_directory, 'data', 'moviwebapp.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+
+db.init_app(app)
+# data_manager = JSONDataManager('data.json')
+
+data_manager = SQLiteDataManager()
+
+
 
 
 @app.route('/')
@@ -27,13 +40,22 @@ def login():
         name = request.form.get('name')
         password = request.form.get('password')
         user = data_manager.authenticate_user(name, password)
+
         if user:
             # Store the authenticated user's information in the session
             session['user'] = user
-            return redirect(url_for('favorite_movies', user_id=user['id']))
+
+            # Check the type of user object and access the ID attribute accordingly
+            if isinstance(user, dict):  # JSON data case
+                user_id = user['id']
+            else:  # SQLite data case
+                user_id = user.id
+
+            return redirect(url_for('favorite_movies', user_id=user_id))
         else:
             return render_template('login.html', error='Invalid name or password')
     return render_template('login.html', user=session.get('user'))
+
 
 
 @app.route('/users')
