@@ -11,7 +11,7 @@ class Users(db.Model):
     movies = db.relationship('Movies', backref='user', lazy=True)
 
     def to_dict(self):
-        """Convert the object attributes to a dictionary."""
+        """Convert the object attributes to a dictionary cause my app first was built for json."""
         return {
             'id': self.id,
             'name': self.name,
@@ -29,7 +29,7 @@ class Movies(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def to_dict(self):
-        """Convert the object attributes to a dictionary."""
+        """Convert the object attributes to a dictionary cause my app first was built for json."""
         return {
             'id': self.id,
             'name': self.name,
@@ -39,13 +39,33 @@ class Movies(db.Model):
             'url': self.url,
             'user_id': self.user_id
         }
+    
 
-# creatd the tables 
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    review_text = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+
+    def to_dict(self):
+        """Convert the object attributes to a dictionary cause my app first was built for json."""
+        return {
+            'id': self.id,
+            'review_text': self.review_text,
+            'rating': self.rating,
+            'user_id': self.user_id,
+            'movie_id': self.movie_id
+        }
+
+
+# # creatd the tables 
 
 # if __name__ == '__main__':
 #     from app import app
 
 #     # Initialize the SQLAlchemy extension with the Flask app
+#     #  if i want to add more tables , need to comment the db.init_app in the app.py
 #     db.init_app(app)
 
 #     # Create the database tables
