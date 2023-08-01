@@ -52,6 +52,7 @@
             src="{{ movie['url'] }}"
             alt="{{ movie['name'] }}"
           />
+
           <div class="movie-info">
             <h2 class="movie-title">
               {{ movie["name"] }}
@@ -73,6 +74,12 @@
               >
                 <input class="my-btn" type="submit" value="Edit Movie" />
               </form>
+              <form
+                action="{{ url_for('add_review', user_id=user_id, movie_id=movie['id']) }}"
+                method="GET"
+              >
+                <input class="my-btn" type="submit" value="Add Review" />
+              </form>
 
               <form
                 action="{{ url_for('delete_movie', user_id=user_id, movie_id=movie['id']) }}"
@@ -82,8 +89,8 @@
               </form>
             </div>
           </div>
+          {% endfor %}
         </li>
-        {% endfor %}
       </ul>
 
       <a href="/logout">Logout</a>

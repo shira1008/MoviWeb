@@ -1,0 +1,44 @@
+<!-- add_review.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Review</title>
+  </head>
+  <body>
+    <h1>Add Review for {{movie["name"]}}</h1>
+    <form
+      method="post"
+      action="{{ url_for('add_review', user_id=user_id, movie_id=movie_id) }}"
+    >
+      <label for="review_text">Review:</label>
+      <textarea id="review_text" name="review_text" required></textarea>
+
+      <label for="rating">Rating:</label>
+      <input
+        type="number"
+        id="rating"
+        name="rating"
+        min="1"
+        max="10"
+        step="0.1"
+        required
+      />
+
+      <button type="submit">
+        {% if user_review %} Edit Review {% else %} Submit Review {%endif%}
+      </button>
+    </form>
+
+    {% for review in user_review %}
+    <p>Review: {{ review['review_text'] }}</p>
+    <p>Rating: {{ review['rating'] }}</p>
+    <form
+      action="{{ url_for('delete_review', user_id=user_id, movie_id=movie_id) }}"
+      method="post"
+    >
+      <button type="submit">Delete Review</button>
+    </form>
+    {% endfor %}
+  </body>
+</html>

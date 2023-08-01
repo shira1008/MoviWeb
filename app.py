@@ -75,9 +75,12 @@ def favorite_movies(user_id):
         if user_id == authenticated_user_id:
             movies = data_manager.get_user_movies(user_id)
             user = data_manager.get_user_by_id(user_id)
+            
             if not user:
                 abort(404, "User not found.")
             user_name = user["name"]
+
+
             return render_template('user_movies.html', movies=movies, user_id=user_id, user_name=user_name, user=session.get('user'))
         else:
             # Redirect to an login page if the user is trying to access other users' movies
@@ -229,12 +232,6 @@ def profile_page(user_id, username):
     if "user" not in session:
         return redirect(url_for("login"))
 
-    # Get all users
-    users = data_manager.get_all_users()
-
-    # Find the user by username
-    # user = next((user for user in users if user["name"] == username), None)
-
     user = data_manager.get_user_by_id(user_id)
 
     if user:
@@ -274,6 +271,52 @@ def update_profile_pic():
 
       
         return redirect(url_for('profile_page', username=session['user']['name'],  user_id = user_id))
+
+
+@app.route('/add_review/<int:user_id>/<int:movie_id>', methods=['GET', 'POST'])
+def add_review(user_id, movie_id):
+    # Retrieve the user's movies
+    user_movies = data_manager.get_user_movies(user_id)
+    movie = data_manager.get_movie_by_id(user_movies, movie_id)
+
+    if not movie:
+        abort(404, "Movie not found.")
+            
+    if request.method == "POST":
+        review_text = request.form.get('review_text')
+        review_rating = request.form.get('rating')
+
+        # Check the rating value
+        if review_rating !=  "N/A":
+            if float(review_rating) > 10 or float(review_rating) < 0 : 
+                return "Please enter a value between 0-10"
+
+        # Add the review using the data manager
+        data_manager.add_review(user_id, movie_id, review_text, float(review_rating))
+
+        return redirect(url_for('add_review', user_id=user_id, movie_id = movie_id))
+
+    # Fetch the user's review for the specific movie
+    user_review = data_manager.get_movie_reviews(user_id, movie_id)
+
+    return render_template('add_review.html', user_id=user_id, movie_id=movie_id, movie=movie, user_review=user_review)
+
+
+@app.route('/delete_review/<int:user_id>/<int:movie_id>', methods=['POST'])
+def delete_review(user_id, movie_id):
+    # Check if the user is authenticated
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    # Check if the user is authorized to delete the review
+    if session['user']['id'] != user_id:
+        abort(403, "You are not authorized to delete this review.")
+
+    # Delete the review using the data manager
+    data_manager.delete_review(user_id, movie_id)
+
+    return redirect(url_for('add_review', user_id=user_id, movie_id = movie_id))
+
 
 
 @app.errorhandler(404)

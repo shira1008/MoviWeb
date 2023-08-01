@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datamanager.data_manager_interface import DataManagerInterface
-from models import db, Users, Movies
+from models import db, Users, Movies, Review
 import hashlib
 
 
@@ -205,3 +205,55 @@ class SQLiteDataManager(DataManagerInterface):
             'profile_picture_url': user.profile_picture_url,
           
         }
+    
+
+    def add_review(self, user_id, movie_id, review_text, rating):
+        """Add a review for a movie"""
+        user = Users.query.get(user_id)
+        movie = Movies.query.get(movie_id)
+
+        if user and movie:
+            # Check if a review already exists for the user and movie
+            existing_review = Review.query.filter_by(user_id=user_id, movie_id=movie_id).first()
+
+            if existing_review:
+                # Update the existing review
+                existing_review.review_text = review_text
+                existing_review.rating = rating
+                db.session.commit()
+                return existing_review
+            else:
+                # Create a new Review object
+                new_review = Review(
+                    user_id=user_id,
+                    movie_id=movie_id,
+                    review_text=review_text,
+                    rating=rating
+                )
+                db.session.add(new_review)
+                db.session.commit()
+                return new_review
+
+        return None
+
+
+    
+    def delete_review(self, user_id, movie_id):
+        """Delete a review for a specific user and movie"""
+        review = Review.query.filter_by(user_id=user_id, movie_id=movie_id).first()
+        if review:
+            db.session.delete(review)
+            db.session.commit()
+
+
+    def get_movie_reviews(self, user_id=None, movie_id=None):
+        """Get all reviews for a specific user and/or movie"""
+        query = Review.query
+
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        if movie_id:
+            query = query.filter_by(movie_id=movie_id)
+
+        reviews = query.all()
+        return reviews
