@@ -18,11 +18,9 @@ db_path = os.path.join(current_directory, 'data', 'moviwebapp.sqlite')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 
 db.init_app(app)
-#data_manager = JSONDataManager('data.json')
 
+# data_manager = JSONDataManager('data.json')
 data_manager = SQLiteDataManager()
-
-
 
 
 @app.route('/')
@@ -108,31 +106,26 @@ def add_user():
 
 
 @app.route('/add_movie/<int:user_id>', methods=['POST'])
-# CHECK HERE FOR THE JSON MANAGER
+# CHECK HERE FOR THE JSON MANAGER ***********************
 def add_movie(user_id):
     """ Add a new movie to the app from the API """
     movie_name = request.form.get('movie_name')
     # Fetching the data
     movie_data = fetch_data(movie_name)
-    print("Fetched movie data:", movie_data)
 
-    print("Request received for user ID:", user_id)
     if 'Response' in movie_data and movie_data['Response'] == 'False' and movie_data['Error'] == 'Movie not found!':
         return "Movie not found in the API."
     
     user = data_manager.get_user_by_id(user_id)
-    print("User data:", user)
     # Extract relevant information from the API response
     director = movie_data.get('Director', '')
     url = movie_data["Poster"]
-    # Extract relevant information from the API response
     year_str = movie_data.get('Year', '')
     try:
         year = int(year_str)
     except ValueError:
         # Handle the case where the year value is not a valid integer
-        # For example, set a default value or skip inserting this movie
-        year = 0  # You can set this to any default value you prefer
+        year = 0  
     rating_str = movie_data.get('imdbRating', '')
     try:
         rating = float(rating_str)
@@ -140,29 +133,7 @@ def add_movie(user_id):
         rating = 0.0
 
     if user:
-        # Handle both JSON data and SQLite data for the 'user' object
-        if isinstance(user, dict):  # JSON data case
-            user_movies = user['movies']
-        else:  # SQLite data case
-            user_movies = user.movies
-        print("User movies:", user_movies)
-        
-        if isinstance(data_manager, SQLiteDataManager):
-            movie = data_manager.create_movie_obj(user_movies, movie_name, director, year, rating, url, user_id)
-        else:
-            movie = data_manager.create_movie_obj(user_movies, movie_name, director, year, rating, url)
-
-        print("New movie object:", movie)
-
-        if movie is not None:
-            # Assign the correct user ID to the movie before adding it to the database
-            if isinstance(data_manager, SQLiteDataManager):
-                movie.user_id = user_id
-                db.session.commit()
-            else:
-                movie["user_id"]= user_id
-        else:
-            return "Movie already exists in the list."
+        data_manager.add_movie(user, movie_name, director, year, rating, url, user_id)
 
         return redirect(url_for('favorite_movies', user_id=user_id))
     else:
@@ -262,7 +233,9 @@ def profile_page(user_id, username):
     users = data_manager.get_all_users()
 
     # Find the user by username
-    user = next((user for user in users if user["name"] == username), None)
+    # user = next((user for user in users if user["name"] == username), None)
+
+    user = data_manager.get_user_by_id(user_id)
 
     if user:
         # Retrieve the profile picture URL

@@ -49,8 +49,9 @@ class SQLiteDataManager(DataManagerInterface):
     
     def get_all_users(self):
         """Return a list of all users"""
-        return Users.query.all()
-
+        users = Users.query.all()
+        print(users)
+        return users
 
     def get_user_movies(self, user_id):
         """Return a list of all movies of a specific user"""
@@ -71,6 +72,16 @@ class SQLiteDataManager(DataManagerInterface):
         db.session.add(new_user)
         db.session.commit()
         return True
+    
+    
+    def add_movie(self, user, movie_name, director, year, rating, url, user_id):
+        user_movies = user["movies"]
+        movie  = self.create_movie_obj(user_movies, movie_name, director, year, rating, url, user_id)
+        if movie is not None:
+            # Assign the correct user ID to the movie before adding it to the database
+            movie.user_id = user_id
+            db.session.commit()
+        return "Movie already exists in the list."
         
 
 

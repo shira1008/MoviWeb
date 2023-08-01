@@ -107,6 +107,15 @@ class JSONDataManager(DataManagerInterface):
             print(f"Error adding user: {str(e)}")
         return True
 
+    def add_movie(self,user, movie_name, director, year, rating, url, user_id):
+        user_movies = user['movies']
+        movie = self.create_movie_obj(user_movies, movie_name,director,year,rating,url)
+        if len(movie) > 0 :
+            user_movies.append(movie)
+        else:
+            return "Movie already exists in the list."
+        self.update_user_movies(user_id, user_movies)
+
 
     def create_movie_obj(self, user_movies, movie_name,director,year,rating,url):
         """Return the movie object if not return an empty one"""
