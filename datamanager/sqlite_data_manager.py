@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datamanager.data_manager_interface import DataManagerInterface
 from models import db, Users, Movies
 import hashlib
-import uuid
+
 
 
 
@@ -13,11 +13,13 @@ class SQLiteDataManager(DataManagerInterface):
            so we implement an empty method body."""
         pass
     
+
     def to_movie_instance(self, movie_data):
         """Convert a movie dictionary to a Movies instance"""
         if isinstance(movie_data, Movies):
             return movie_data
         return Movies(**movie_data)
+
 
     def to_movie_dict(self, movie):
         """Convert a Movies instance to a dictionary"""
@@ -40,6 +42,7 @@ class SQLiteDataManager(DataManagerInterface):
             return user_dict
         return None
     
+
     def get_movie_by_id(self, movies, movie_id):
         """Get the movie object from the list of movies with the given movie_id"""
         for movie in movies:
@@ -47,11 +50,13 @@ class SQLiteDataManager(DataManagerInterface):
                 return movie
         return None
     
+
     def get_all_users(self):
         """Return a list of all users"""
         users = Users.query.all()
         print(users)
         return users
+
 
     def get_user_movies(self, user_id):
         """Return a list of all movies of a specific user"""
@@ -112,6 +117,7 @@ class SQLiteDataManager(DataManagerInterface):
 
         return new_movie
     
+
     def update_movie_details(self, movie, movie_name, director, year, rating):
         """Update the details of the given movie"""
         if isinstance(movie, dict):  # JSON data case
@@ -197,5 +203,5 @@ class SQLiteDataManager(DataManagerInterface):
             'name': user.name,
             'password': user.password,
             'profile_picture_url': user.profile_picture_url,
-            # Add any other attributes you want to include in the dictionary representation
+          
         }
