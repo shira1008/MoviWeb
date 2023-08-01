@@ -299,7 +299,7 @@ def add_review(user_id, movie_id):
     # Fetch the user's review for the specific movie
     user_review = data_manager.get_movie_reviews(user_id, movie_id)
 
-    return render_template('add_review.html', user_id=user_id, movie_id=movie_id, movie=movie, user_review=user_review)
+    return render_template('add_review.html', user_id=user_id, movie_id=movie_id, movie=movie, user_review=user_review,  user=session.get('user'))
 
 
 @app.route('/delete_review/<int:user_id>/<int:movie_id>', methods=['POST'])
