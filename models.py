@@ -10,14 +10,19 @@ class Users(db.Model):
     profile_picture_url = db.Column(db.String(255), nullable=False)
     movies = db.relationship('Movies', backref='user', lazy=True)
 
-    def to_dict(self):
+    def to_dict(self, include_pass = True):
         """Convert the object attributes to a dictionary cause my app first was built for json."""
-        return {
+        """Convert the object attributes to a dictionary."""
+        user_dict = {
             'id': self.id,
             'name': self.name,
-            'password': self.password,
             'profile_picture_url': self.profile_picture_url
         }
+
+        if include_pass:
+            user_dict['password'] = self.password
+
+        return user_dict
 
 class Movies(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

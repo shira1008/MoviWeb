@@ -2,16 +2,19 @@ from flask import Flask, render_template, request, redirect, url_for, abort, ses
 from datamanager.json_data_manager import JSONDataManager
 from datamanager.sqlite_data_manager import SQLiteDataManager
 from fetching_from_api import fetch_data
+from api import api  # Importing the API blueprint
 from models import db
 import hashlib
 import secrets
 import os
+
 
 # to crate a secret key
 secret = secrets.token_hex(16)
 
 app = Flask(__name__)
 app.secret_key = secret
+app.register_blueprint(api, url_prefix='/api')  # Registering the blueprint
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_directory, 'data', 'moviwebapp.sqlite')
