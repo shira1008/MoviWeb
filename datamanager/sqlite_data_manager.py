@@ -54,7 +54,6 @@ class SQLiteDataManager(DataManagerInterface):
     def get_all_users(self):
         """Return a list of all users"""
         users = Users.query.all()
-        print(users)
         return users
 
 
