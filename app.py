@@ -21,7 +21,6 @@ db_path = os.path.join(current_directory, 'data', 'moviwebapp.sqlite')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 
 db.init_app(app)
-
 # data_manager = JSONDataManager('data.json')
 data_manager = SQLiteDataManager()
 
@@ -183,11 +182,12 @@ def update_movie(user_id, movie_id):
 @app.route("/users/<int:user_id>/delete_movie/<int:movie_id>", methods=["POST"])
 def delete_movie(user_id, movie_id):
     """ Handle the delete movie"""
+    user = data_manager.get_user_by_id(user_id)
+    if not user:
+        abort(404, "User not found.")
+
     if isinstance(data_manager, SQLiteDataManager):
-        user = data_manager.get_user_by_id(user_id)
-        if not user:
-            abort(404, "User not found.")
-    
+
         user_movies = data_manager.get_user_movies(user_id)
         movie = data_manager.get_movie_by_id(user_movies, movie_id)
 
@@ -197,10 +197,6 @@ def delete_movie(user_id, movie_id):
         data_manager.delete_movie(user_id, movie_id)
     else:
         # Handle the case for other data managers (e.g., JSONDataManager)
-        user = data_manager.get_user_by_id(user_id)
-        if not user:
-            abort(404, "User not found.")
-    
         user_movies = user['movies']
         movie_found = False
         for movie in user_movies:
