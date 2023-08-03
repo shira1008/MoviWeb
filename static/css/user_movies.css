@@ -1,11 +1,11 @@
 body {
-  background: #f5f5f0;
+  background: var(--grey-50);
   color: black;
 }
 
 .list-movies-title {
   padding: 10px 0;
-  background: #ffe4b5;
+  background: var(--orange_bg);
   color: rgb(31, 29, 29);
   text-align: center;
   font-size: 16pt;

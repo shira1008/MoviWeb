@@ -1,7 +1,7 @@
 .container {
   margin: 0 auto;
   padding: 8rem 0;
-  background: #ffe4b5;
+  background: var(--orange_bg);
 }
 
 /* Header styles */
@@ -22,7 +22,7 @@ h1 {
 .section_user {
   padding: 8rem 0;
   background: var(--primary-400);
-  color: #1f1d1d;
+  color: var(--textColor);
   text-align: center;
   font-size: 16pt;
   display: flex;
@@ -34,7 +34,7 @@ h1 {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #fff;
+  background-color: var(--grey-50);
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
 }
@@ -71,7 +71,7 @@ form input[type="number"] {
 .review {
   margin-bottom: 20px;
   padding: 20px;
-  background-color: #f8f8f8;
+  background-color: var(--grey-50);
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 500px;
