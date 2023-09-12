@@ -24,10 +24,12 @@ The MoviWeb App is a Flask-based web application that allows users to track thei
 - `config.py`: Containing the API key.
 - `datamanager/`: Directory containing the data manager module.
 - `datamanager/json_data_manager.py`: Module for managing data stored in JSON format.
+- `datamanager/sql_data_manager.py`: Module for managing data stored in database - sqlite.
 - `fetching_from_api.py`: Module for fetching movie data from an external API.
 - `templates/`: Directory containing HTML templates used for rendering the web pages.
 - `static/`: Directory containing static files, such as CSS stylesheets and images.
-- `moviwebapp.sqlite`: storing user and movie data.
+- `data.json`: json file for storing user and movie data - the user can switch between databases.
+- `moviwebapp.sqlite`: storing user and movie data -  - the user can switch between databases.
 
 ##  Accessing the deployed app
 http://shirashahar.pythonanywhere.com/
