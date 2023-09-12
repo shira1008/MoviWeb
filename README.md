@@ -27,7 +27,7 @@ The MoviWeb App is a Flask-based web application that allows users to track thei
 - `fetching_from_api.py`: Module for fetching movie data from an external API.
 - `templates/`: Directory containing HTML templates used for rendering the web pages.
 - `static/`: Directory containing static files, such as CSS stylesheets and images.
-- `data.json`: JSON file for storing user and movie data.
+- `moviwebapp.sqlite`: storing user and movie data.
 
 ##  Accessing the deployed app
 http://shirashahar.pythonanywhere.com/
