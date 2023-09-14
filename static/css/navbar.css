@@ -12,6 +12,7 @@ Navbar - small screen
   background: transparent;
   box-shadow: var(--dark-shadow);
   z-index: 2;
+  backdrop-filter: blur(8px);
 }
 
 .nav-icons {
@@ -41,10 +42,11 @@ Navbar - small screen
 /* the btn */
 .nav-toggle {
   position: absolute;
-  top: 32px;
-  right: 0;
+  top: 10px;
+  right: 20px;
   /* למחוק מה שלמעלה אולי */
   background: transparent;
+
   border: transparent;
   font-size: 1.5rem;
   color: var(--primary-900);
@@ -66,7 +68,6 @@ Navbar - small screen
 }
 
 .nav-link:hover {
-  background: var(--grey-400);
   color: var(--grey-300);
   padding-left: 2.3rem;
 }
@@ -81,7 +82,8 @@ Navbar - small screen
 /* js gonna add this class נראה את זה מופיע כי: */
 .show-links {
   height: 200px;
-  background-color: rgba(255, 200, 155, 0.5);
+
+  backdrop-filter: blur(15px);
 }
 
 /* FOR THE BIG SCREEN */

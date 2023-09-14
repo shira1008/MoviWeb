@@ -1,6 +1,6 @@
 .header {
-  background: linear-gradient(rgba(206, 99, 56, 0.5), rgba(0, 0, 0, 0.7)),
-    url(images/pexels-photo-269140.webp) center/cover no-repeat;
+  background: linear-gradient(rgba(75, 26, 5, 0.5), rgba(0, 0, 0, 0.9)),
+    url(images/pexels-photo-2061678.jpeg) center/cover no-repeat;
 
   min-height: 100vh;
   display: flex;
@@ -8,4 +8,9 @@
   justify-content: center;
   align-items: center;
   color: white;
+}
+
+.header h1,
+.header h2 {
+  text-align: center;
 }
