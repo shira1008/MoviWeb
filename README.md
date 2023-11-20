@@ -32,7 +32,7 @@ The MoviWeb App is a Flask-based web application that allows users to track thei
 - `moviwebapp.sqlite`: storing user and movie data -  - the user can switch between databases.
 
 ##  Accessing the deployed app
-http://shirashahar.pythonanywhere.com/
+http://shirashahar.pythonanywhere.com
 
 
 
